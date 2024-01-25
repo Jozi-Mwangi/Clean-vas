@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinvas</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+      h1 {
+        color: #333;
+      }
+      form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+      }
+      input {
+        padding: 10px;
+        margin-bottom: 10px;
+        width: 300px;
+      }
+      button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to the Song Censorship App</h1>
+    <form action="/process-song" method="post">
+      <label for="songInput">Enter the Song Name or URL:</label>
+      <input type="text" id="songInput" name="songInput" required />
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>     
