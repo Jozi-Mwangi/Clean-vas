@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <ul id="results-list" >
+        <% results.forEach((result)=>{%>
+            <li>
+                <a href="#" class="song-link" data-title="<%=result.title%>" data-artist="<% result.artist %>" >
+                    <%= result.title %> - <%result.artist%>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            const songLinks = document.querySelectorAll(".song-link");
+            songLinks.forEach(link=>{
+                link.addEventListener("click", function (event){
+                    event.preventDefault();
+                    const title = this.getAttribute("data-title")
+                    const artist = this.getAttribute("data-artist")
+                    console.log(`Song: ${title} - Artist: ${artist}`);
+                })
+            })
+        })
+    </script>
+</body>
+</html>
