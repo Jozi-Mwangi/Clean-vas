@@ -2,6 +2,7 @@ const { default: axios } = require("axios");
 const express = require("express");
 const ensureAuthenticated = require("../middleware");
 const dataCleaner = require("../utils/dataCleaner");
+const fs = require("fs");
 const { constants } = require("../utils/paths");
 
 const app = express();
@@ -23,6 +24,8 @@ async function getSongAndLyrics(songTitle) {
       const searchResults = response.data;
       const cleanResults = dataCleaner(searchResults);
 
+      fs.writeFileSync("song-results.json", JSON.stringify(cleanResults));
+      //  const { paths } = cleanResults;
       res.send({ cleanResults });
     } catch (error) {
       console.error(error);
