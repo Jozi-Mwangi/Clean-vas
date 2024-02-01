@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/services/crawlLyrics.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stop": "echo \"Stopping the application\""
   },
   "author": "",
   "license": "ISC",

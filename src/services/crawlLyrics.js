@@ -6,39 +6,36 @@ async function crawlLyrics(lyricsPath) {
   // const {lyricsPath} = cleanResults;
 
   console.log("Starting");
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: false,
+    timeout: 20000,
+    slowMo: 300,
+    devtools: true,
+  });
 
   const page = await browser.newPage();
-  await page.goto(`https://genius.com/${lyricsPath}`);
-  await page.setViewport({ width: 1080, height: 1024 });
-
-//   console.log("Fetching xpath");
-  const geniusXPath = '//*[@id="lyrics-root"]';
-  const lyricsContainerSelector = '//*[@id="lyrics-root"]';
-
+  
   try {
+    console.log("Navigating to the page");
+    await page.goto(`https://genius.com/${lyricsPath}`, { waitUntil: "networkidle0", timeout: 50000 }, );
+    await page.setViewport({ width: 1080, height: 1024 });
+  
+    const lyricsContainerSelector = '//*[@id="lyrics-root"]';
     console.log("Waiting for the Lyrics container to be present");
     await page.waitForXPath(lyricsContainerSelector);
-
-    const elements = await page.$x(geniusXPath);
-    // if ((await elements).length === 0) {
-    //   console.error("Error finding the Lyrics");
-    //   page.close();
-    //   browser.close();
-    // }
-    console.log("Resolved");
 
     console.log("Now getting lyrics");
     const songLyrics = await page.evaluate((el) => {
       return el.textContent.trim();
-    }, elements[0]);
+    }, (await page.$x(lyricsContainerSelector))[0]);
 
     console.log("Found them");
     console.log(songLyrics);
+   
     return songLyrics;
   } catch (error) {
     console.error("Error: ", error.message);
-  } finally {
+     } finally {
     await page.close();
     await browser.close();
   }
