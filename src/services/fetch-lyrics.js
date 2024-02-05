@@ -4,6 +4,7 @@ const ensureAuthenticated = require("../middleware");
 const dataCleaner = require("../utils/dataCleaner");
 const fs = require("fs");
 const { constants } = require("../utils/paths");
+const getLyrics = require("./crawler");
 
 const app = express();
 async function getSongAndLyrics(songTitle) {
@@ -24,7 +25,11 @@ async function getSongAndLyrics(songTitle) {
       const searchResults = response.data;
       const cleanResults = dataCleaner(searchResults);
 
-      fs.writeFileSync("song-results.json", JSON.stringify(cleanResults));
+      const {lyricsPath} = cleanResults;
+      const lyrics = getLyrics(lyricsPath)
+
+
+      fs.writeFileSync("song-results.json", JSON.stringify(lyrics));
       //  const { paths } = cleanResults;
       res.send({ cleanResults });
     } catch (error) {

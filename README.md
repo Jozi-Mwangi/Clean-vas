@@ -8,11 +8,11 @@
 This application censor lyrics to hash curse words among a pool of other words. It simply takes a song title as input and outputs the censored version of the lyrics. Easy, right?
 
 ## Setup/Installation Requirements
-* This is a great place
-* to list setup instructions
-* in a simple
-* easy-to-understand
-* format
+* 
+* 
+* 
+* 
+* 
 
 ## Known Bugs
 

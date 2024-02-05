@@ -1,3 +1,4 @@
+const getLyrics = require("../services/crawler");
 const getSongAndLyrics = require("../services/fetch-lyrics");
 
 const processSong = async (req, res) => {
@@ -7,16 +8,10 @@ const processSong = async (req, res) => {
     const { title, artist } = req.body;
     console.log(req.body);
     
-    const tracks = await getSongAndLyrics();
+    const tracks = await getSongAndLyrics(title);
     console.log(`Fetched tracks: ${tracks}`);
 
-    // Crawl to fetch the lyrics
-    const lyrics = await fetchLyrics(title)
-    
-    res.status(200).json({results: tracks})
-    
-
-    // res.status(200).json({ message: "Song processing initiated" });
+    res.status(200).json({results: tracks})    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server error" });

@@ -2,21 +2,25 @@ const { Builder, Browser, By, until } = require("selenium-webdriver");
 
 async function getLyrics(lyricsPath) {
   let driver = await new Builder().forBrowser(Browser.CHROME).build();
-
+  
   try {
+    await driver.manage().setTimeouts({implicit: 30000});
     console.log("Navigating");
     await driver.get(`https://genius.com/${lyricsPath}`);
 
-    const lyricsContainerSelector = '//*[@id="lyrics-root"]';
-
-    await driver.wait(until.elementLocated(lyricsContainerSelector));
-
+    console.log("Song Title");
+    const songTitleEl = By.xpath("// */div[contains(@class, 'SongHeader')]/h1");
+    await driver.wait(until.elementLocated(songTitleEl));
+    
+    
     console.log("Getting Lyrics");
-    const lyricsContainer = await driver.findElement(By.xpath(lyricsContainerSelector));
-    const lyrics = lyricsContainer.getText();
-
+    const lyricsContainerSelector = By.xpath('//*[@id="lyrics-root"]');
+    const lyricsContainer = await driver.wait(until.elementLocated(lyricsContainerSelector));
+    
+    console.log("Found Them!")
+    const lyrics = await lyricsContainer.getText();
     console.log("Lyrics: ", lyrics);
-
+    return lyrics;
   } catch (error) {
     console.error(error);
   } finally {
@@ -24,4 +28,5 @@ async function getLyrics(lyricsPath) {
   }
 }
 
-getLyrics("Travis-scott-3500-lyrics");
+// getLyrics("Travis-scott-3500-lyrics");
+module.exports = getLyrics;
