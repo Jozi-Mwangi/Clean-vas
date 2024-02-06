@@ -1,6 +1,6 @@
 const { Builder, Browser, By, until } = require("selenium-webdriver");
 
-async function getLyrics(lyricsPath) {
+async function crawlLyrics(lyricsPath) {
   let driver = await new Builder().forBrowser(Browser.CHROME).build();
   
   try {
@@ -29,4 +29,4 @@ async function getLyrics(lyricsPath) {
 }
 
 // getLyrics("Travis-scott-3500-lyrics");
-module.exports = getLyrics;
+module.exports = crawlLyrics;
