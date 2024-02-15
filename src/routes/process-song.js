@@ -9,7 +9,9 @@ const processSong = async (req, res) => {
   try {
     const { title, artist } = req.body;
     console.log(req.body);
-    const { accessToken } = req.user;
+    console.log(req.user);
+    const user = await req.user
+    const { accessToken } = user;
 
     const tracks = await fetchSongs(title)
     res.status(200).json({results: tracks})    

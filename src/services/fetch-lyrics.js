@@ -9,6 +9,7 @@ const crawlLyrics = require("./crawler");
 const app = express();
 async function getLyrics(songTitle, accessToken) {
   try {
+    
     const response = await axios.get(`${constants.GENIUS_API_URL}/search`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
