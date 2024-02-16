@@ -12,9 +12,11 @@ const geniusStrategy = new oAuth2Strategy(
     callbackURL: constants.CALLBACK_URL,
   },
   (accessToken, refreshToken, profile, done) => {
-    // return done(null, profile, accessToken);
     console.log(accessToken);
-    return done(null, Object.assign(profile, {accessToken}))
+    const user = Object.assign(accessToken)
+    
+    return done(null, profile, user)
+    // return done(null, Object.assign(profile, {accessToken}))
   }
 );
 
