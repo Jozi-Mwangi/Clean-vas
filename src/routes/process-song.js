@@ -1,26 +1,28 @@
 const getLyrics = require("../services/fetch-lyrics");
 const fetchSongs = require("../services/fetch-song");
-const censorProfaneLyrics = require("../services/censor-lyrics")
+const censorProfaneLyrics = require("../services/censor-lyrics");
+
+const findSong = async (req, res) => {
+  // Get the song from the user.
+  // console.log(req.body);
+  const { songInput } = req.body;
+  const tracks = await fetchSongs(songInput);
+  // console.log("Finding songs: ", tracks);
+  res.status(200).json({ results: tracks });
+};
 
 const processSong = async (req, res) => {
-  // Get the song from the user.
-  // Song could be -> name, ->Song URL
-
   try {
-    const { title, artist } = req.body;
-    console.log(req.body);
-    console.log(req);
-    // console.log(req.user);
-    // const user = await req.user
-    // const { accessToken } = req.sessionID
+    console.log("Processing the song");
+   // const user = await req.user
+  //  console.log(req);
+   const {title } = req.body
+  //  Here, i need to access the selected son and artist from the frontend
+    // const { accessToken } = req.user;
 
-    const tracks = await fetchSongs(title)
-    res.status(200).json({results: tracks})    
-    
     const { originalLyrics } = await getLyrics(title, accessToken);
-  
-    const censoredLyrics = await censorProfaneLyrics(originalLyrics);
 
+    const censoredLyrics = await censorProfaneLyrics(originalLyrics);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server error" });
@@ -29,4 +31,4 @@ const processSong = async (req, res) => {
   // Look for the song
 };
 
-module.exports = processSong;
+module.exports = { processSong, findSong };

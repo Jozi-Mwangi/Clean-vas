@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clinvas</title>
+    <link rel="stylesheet" href=<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
       body {
         font-family: 'Arial', sans-serif;
@@ -43,28 +44,50 @@
       <form id="songForm" action="/process-song" method="post">
         <label for="songInput">Enter the Song Name or URL:</label>
         <input type="text" id="songInput" name="songInput" required />
-        <button type="submit" onclick="processSong(event)">Submit</button>
+        <button type="submit" id="submit-button" onclick="findSong(event)">
+        <i class="fas fa-spinner fa-spin" style="display: none;" ></i>Submit</button>
       </form>
     </div>
     <div id="resultsContainer" ></div>
     <script>
 
-      async function processSong(event){
+      document.getElementById("songForm").addEventListener("submit", function(event){
+        document.querySelector("#submit-button i.fa-spinner").style.display = "inline-block";
+        document.getElementById("submit-button").setAttribute("disabled", "disabled")
+      })
+
+      async function findSong(event){
         event.preventDefault();
         const songInput = document.getElementById("songInput").value;
+        console.log("Title from ejs",songInput);
         try {
-          const res = await fetch("/process-song", {
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
+          
+
+          const res = await fetch("/find-song", {
             method:"POST",
             headers: {
               "Content-Type" : "application/json"
             },
             body: JSON.stringify({songInput})
           });
+
+          if (!res.ok){
+            throw new Error(`HTTP error! status: ${res.status}`)
+          }
+
           const data = await res.json();
+            
           console.log(`FrontEnd: ${data}`);
           displayResults(data?.results)
+        
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
         } catch (error) {
           console.error(error);
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
         }
       }
 
@@ -72,22 +95,24 @@
         const resultsContainer = document.getElementById("resultsContainer");
         resultsContainer.innerHTML += "<h2>Song Results</h2>";
 
+        console.log("results from results.ejs: ", results);
+
         if (results.length == 0){
           resultsContainer.innerHTML += "<p>No song found</p>";
         } else {
           results.forEach(result=>{
             const resultItem = document.createElement("p");
             resultItem.innerHTML += `<span class="result-link" data-title="${result.title}" data-artist="${result.artist}">${result.title} - ${result.artist}</span>`;
-            resultsContainer.append(resultItem);
+            resultsContainer.appendChild(resultItem);
           });
 
           const resultLinks = document.querySelectorAll(".result-link");
           resultLinks.forEach(link=>{
             link.addEventListener("click", function(){
-              const selectedTitle = this.getAttribute("data-title");
-              const selectedArtist = this.getAttribute("data-artist");
+              const selectedTitle = this.dataset.title;
+              const selectedArtist = this.dataset.artist;
 
-              sendSelectedSong(selectedTitle, selectedTitle);
+              sendSelectedSong(selectedTitle,selectedArtist);
             });
           });
         }

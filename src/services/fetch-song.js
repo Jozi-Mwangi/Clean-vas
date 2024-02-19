@@ -15,12 +15,22 @@ async function fetchSongs(song) {
   };
 
   try {
+    // console.log("trying");
+    console.log(song);
     const response = await axios.request(options);
-    console.log(response.data.tracks);
-    return response?.data.tracks;
+    // console.log("Backend: ", response.data.tracks.hits);
+
+    const dataToRender = response?.data.tracks.hits.map((hit)=> ({
+      title: hit.track.title,
+      artist: hit.track.subtitle
+    }))
+    // return response?.data.tracks.hits;
+    return dataToRender;
   } catch (error) {
     console.error(error);
   }
 }
+
+// fetchSongs("3500")
 
 module.exports = fetchSongs;
