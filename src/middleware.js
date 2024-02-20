@@ -9,7 +9,7 @@ function ensureAuthenticated(req, res, next) {
 
 const attachTokens = async (req, res, next) => {
   try {
-    console.log(req);
+    // console.log(req);
     const accessToken = req.headers.authorization || req.query.access_token;
     console.log("Token type: ", typeof(accessToken));
     console.log("From middleware: ", accessToken);

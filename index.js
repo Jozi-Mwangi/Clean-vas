@@ -1,11 +1,13 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const asyncHandler = require("express-async-handler")
+// require("dotenv").config();
 
 const app = express();
 const path = require("path");
 const {processSong, findSong} = require("./src/routes/process-song");
 
+require("dotenv").config({ path: path.resolve(__dirname, '..', '.env.local') });
 const passport = require("passport");
 const session = require("express-session");
 const { constants } = require("./src/utils/paths");
@@ -30,7 +32,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/find-song", findSong);
-app.post("/process-song", attachTokens ,processSong);
+app.post("/process-song", processSong);
 // passport.authenticate("genius", {session: true}) , --> this part was in the "/process-song" route
 
 // app.get("/auth/genius", (req, res) => {
