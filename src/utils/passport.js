@@ -13,11 +13,16 @@ const geniusStrategy = new oAuth2Strategy(
   },
   (accessToken, refreshToken, profile, done) => {
     console.log(accessToken);
-    const user = Object.assign(accessToken)
+    profile.accessToken = accessToken
     
-    return done(null, profile, user)
+    return done(null, profile)
     // return done(null, Object.assign(profile, {accessToken}))
   }
 );
 
 passport.use("genius", geniusStrategy);
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+module.exports = passport;
