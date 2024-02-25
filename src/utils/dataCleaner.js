@@ -16,7 +16,7 @@ function dataCleaner(data) {
     return songDetail;
   } else {
     console.log("No Data received");
-    return [];
+    return null;
   }
 }
 

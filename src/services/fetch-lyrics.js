@@ -7,7 +7,7 @@ const { constants } = require("../utils/paths");
 const crawlLyrics = require("./crawler");
 
 const app = express();
-async function getLyrics(songTitle, accessToken) {
+async function getLyrics(req, res, songTitle, accessToken) {
   try {
     console.log("My access token: ", accessToken);
     const response = await axios.get(`${constants.GENIUS_API_URL}/search`, {
@@ -21,20 +21,24 @@ async function getLyrics(songTitle, accessToken) {
 
     const searchResults = response.data;
     const cleanResults = dataCleaner(searchResults);
-
-    const { lyricsPath } = cleanResults;
-    const lyrics = crawlLyrics(lyricsPath);
+    let lyrics = "";
+    if (cleanResults == null) {
+      console.log("No data!");
+      res.status(500).send("<script>alert('No data')</script>");
+    } else {
+      const { lyricsPath } = cleanResults;
+      lyrics = await crawlLyrics(lyricsPath);
+    }
 
     const responseData = {
       songTitle: cleanResults.songTitle,
       cleanResults: cleanResults,
-      originalLyrics: lyrics
-    }
+      originalLyrics: lyrics,
+    };
 
     return responseData;
     // fs.writeFileSync("song-results.json", JSON.stringify(responseData));
     //  const { paths } = cleanResults;
-  
   } catch (error) {
     console.error(error.message);
   }

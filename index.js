@@ -33,18 +33,7 @@ app.get("/", (req, res) => {
 
 app.post("/find-song", findSong);
 app.post("/process-song", processSong);
-// passport.authenticate("genius", {session: true}) , --> this part was in the "/process-song" route
 
-// app.get("/auth/genius", (req, res) => {
-//   passport.authenticate("genius");
-// });
-
-// app.get(
-//   "/auth/genius/callback",
-//   passport.authenticate("genius", {
-//     successRedirect: "/",
-//   }),
-// );
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
