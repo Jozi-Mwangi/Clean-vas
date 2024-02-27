@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinvas</title>
+    <link rel="stylesheet" href=<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+      h1 {
+        color: #333;
+      }
+      form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+      }
+      input {
+        padding: 10px;
+        margin-bottom: 10px;
+        width: 300px;
+      }
+      button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Welcome to the Song Censorship App</h1>
+      <form id="songForm" action="/process-song" method="post">
+        <label for="songInput">Enter the Song Name or URL:</label>
+        <input type="text" id="songInput" name="songInput" required />
+        <button type="submit" id="submit-button" onclick="findSong(event)">
+        <i class="fas fa-spinner fa-spin" style="display: none;" ></i>Submit</button>
+      </form>
+    </div>
+    <div id="resultsContainer" ></div>
+    <div id="errorContainer" ></div>
+    <script>
+
+      document.getElementById("songForm").addEventListener("submit", function(event){
+        document.querySelector("#submit-button i.fa-spinner").style.display = "inline-block";
+        document.getElementById("submit-button").setAttribute("disabled", "disabled")
+      })
+
+      async function findSong(event){
+        event.preventDefault();
+        const songInput = document.getElementById("songInput").value;
+        console.log("Title from ejs",songInput);
+        try {
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
+          
+
+          const res = await fetch("/find-song", {
+            method:"POST",
+            headers: {
+              "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({songInput})
+          });
+
+          if (!res.ok){
+            throw new Error(`HTTP error! status: ${res.status}`)
+          }
+
+          const data = await res.json();
+            
+          console.log(`FrontEnd: ${data}`);
+          displayResults(data?.results)
+        
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
+        } catch (error) {
+          console.error(error);
+          // document.querySelector("#submit-button i.fa-spinner").style.display = "none";
+          document.getElementById("submit-button").removeAttribute("disabled");
+        }
+      }
+
+      function displayResults(results){
+        const resultsContainer = document.getElementById("resultsContainer");
+        resultsContainer.innerHTML += "<h2>Song Results</h2>";
+
+        console.log("results from results.ejs: ", results);
+
+        if (results.length == 0){
+          resultsContainer.innerHTML += "<p>No song found</p>";
+        } else {
+          results.forEach(result=>{
+            const resultItem = document.createElement("p");
+            resultItem.innerHTML += `<span class="result-link" data-title="${result.title}" data-artist="${result.artist}">${result.title} - ${result.artist}</span>`;
+            resultsContainer.appendChild(resultItem);
+          });
+
+          const resultLinks = document.querySelectorAll(".result-link");
+          resultLinks.forEach(link=>{
+            link.addEventListener("click", function(){
+              const selectedTitle = this.dataset.title;
+              const selectedArtist = this.dataset.artist;
+
+              sendSelectedSong(selectedTitle,selectedArtist);
+            });
+          });
+        }
+      }
+
+      async function sendSelectedSong(title, artist){
+        try {
+          const response = await fetch("/process-song", {
+            method: "POST",
+            headers: {
+              "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({title,artist})
+          })
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    </script>
+  </body>
+</html>     
