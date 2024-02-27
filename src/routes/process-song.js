@@ -15,7 +15,7 @@ const processSong = async (req, res) => {
   try {
     console.log("Processing the song");
     const { title } = req.body;
-    console.log("Process route: ", constants.ACCESS_TOKEN);
+    console.log("Process route: ", title);
     const { originalLyrics } = await getLyrics(
       req,
       res,

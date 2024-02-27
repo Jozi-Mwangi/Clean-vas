@@ -11,7 +11,7 @@ function dataCleaner(data) {
     }));
 
     songDetail.forEach((item) => {
-      console.log(`title: ${item.title}, artist: ${item.artist}`);
+      console.log(`title: ${item.title}, artist: ${item.artist}, lyricsPath: ${item.lyricsPath}`);
     });
     return songDetail;
   } else {

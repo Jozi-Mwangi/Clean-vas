@@ -19,14 +19,17 @@ async function getLyrics(req, res, songTitle, accessToken) {
       },
     });
 
-    const searchResults = response.data;
+    const searchResults = response.data.response;
+    console.log("Search Results", searchResults);
     const cleanResults = dataCleaner(searchResults);
     let lyrics = "";
     if (cleanResults == null) {
       console.log("No data!");
       res.status(500).send("<script>alert('No data')</script>");
     } else {
+      
       const { lyricsPath } = cleanResults;
+      console.log("Lyrics path: ", lyricsPath);
       lyrics = await crawlLyrics(lyricsPath);
     }
 
