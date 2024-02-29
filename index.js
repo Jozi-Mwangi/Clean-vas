@@ -8,19 +8,14 @@ const path = require("path");
 const {processSong, findSong} = require("./src/routes/process-song");
 
 require("dotenv").config({ path: path.resolve(__dirname, '..', '.env.local') });
-const passport = require("passport");
 const session = require("express-session");
 const { constants } = require("./src/utils/paths");
-const { attachTokens }  = require("./src/middleware");
 
 app.set("view engine", "ejs");
-require("./src/utils/passport");
 
 const PORT = 3000;
 
 app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -28,7 +23,7 @@ app.use(express.static("public"));
 // app.use(attachTokens)
 
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.render("main.ejs");
 });
 
 app.post("/find-song", findSong);
