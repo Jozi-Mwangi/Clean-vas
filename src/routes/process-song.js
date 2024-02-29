@@ -1,9 +1,9 @@
-const dotenv = require("dotenv");
-const getLyrics = require("../services/fetch-lyrics");
-const fetchSongs = require("../services/fetch-song");
-const censorProfaneLyrics = require("../services/censor-lyrics");
+// const censorProfaneLyrics = require("../services/censor-lyrics");
 const { constants } = require("../utils/paths");
 const songLyricsPathFetch = require("../services/song_lyrics_fetch");
+const crawlLyrics = require("../services/crawler");
+
+const { setCleanResults, getCleanResults } = require("../utils/sharedData");
 
 const findSong = async (req, res, next) => {
   try {
@@ -13,7 +13,9 @@ const findSong = async (req, res, next) => {
       constants.ACCESS_TOKEN,
       songInput
     );
-    req.cleanResults = cleanResults;
+    // req.cleanResults = cleanResults;
+
+    setCleanResults(cleanResults);
     res.status(200).json({ results: cleanResults });
 
     console.log("From findSong: ", cleanResults);
@@ -28,16 +30,30 @@ const findSong = async (req, res, next) => {
 
 const processSong = async (req, res) => {
   try {
-    const { cleanResults } = req;
-    // const cleanResults = await findSong(req, res)
-    console.log("From process song: ", cleanResults);
-    console.log("Processing the song");
     const { title } = req.body;
-    console.log("Process route: ", title);
-    const { originalLyrics } = await getLyrics(req, res, cleanResults);
+    const cleanResults = getCleanResults();
+    console.log("Processing the song: ", title);
+
+    let lyrics = "";
+    let selectedSong;
+    if (!cleanResults) {
+      console.log("No Results found");
+      return res.status(500).json({ message: "No results found" });
+    } else {
+      selectedSong = cleanResults.find((song) => song.title == title);
+      if (!selectedSong) {
+        console.log("Selected Song not found");
+        return res.status(500).json({ message: "Selected song not found" });
+      }
+    }
+
+    const { lyricsPath } = selectedSong;
+    console.log("Lyrics path from /process-song: ", lyricsPath);
+    const { originalLyrics } = await crawlLyrics(lyricsPath);
+    console.log(originalLyrics);
     res.status(200).render("lyrics.ejs", { lyrics: originalLyrics });
 
-    const censoredLyrics = await censorProfaneLyrics(originalLyrics);
+    // const censoredLyrics = await censorProfaneLyrics(originalLyrics);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal Server error" });
